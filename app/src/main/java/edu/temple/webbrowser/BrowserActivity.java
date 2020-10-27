@@ -11,5 +11,15 @@ public class BrowserActivity extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        PageControlFragment pageControlFragment = new PageControlFragment();
+
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.page_control, pageControlFragment)
+                .commit();
+
+
+
+
     }
 }
