@@ -22,8 +22,8 @@ public class PageControlFragment extends Fragment {
 
     EditText editTextURL;
     ImageButton btnGo;
-    ImageButton btnNext;
-    ImageButton btnBack;
+    ImageButton btnRight;
+    ImageButton btnLeft;
 
     public PageControlFragment() {
 
@@ -49,8 +49,8 @@ public class PageControlFragment extends Fragment {
 
         editTextURL = v.findViewById(R.id.editURL);
         btnGo = v.findViewById(R.id.btnGo);
-        btnBack = v.findViewById(R.id.btnLeft);
-        btnNext = v.findViewById(R.id.btnRight);
+        btnLeft = v.findViewById(R.id.btnLeft);
+        btnRight = v.findViewById(R.id.btnRight);
 
         btnGo.setOnClickListener(new View.OnClickListener() {
 
@@ -61,14 +61,14 @@ public class PageControlFragment extends Fragment {
 
         });
 
-        btnBack.setOnClickListener(new View.OnClickListener() {
+        btnLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ((goBackInterface) getActivity()).goBack();
             }
         });
 
-        btnNext.setOnClickListener(new View.OnClickListener() {
+        btnRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ((goNextInterface) getActivity()).goNext();
