@@ -25,6 +25,8 @@ public class PageControlFragment extends Fragment {
     private String url;
     private EditText urlView;
     private ImageButton searchButton;
+
+
     private boolean isSearched = false;
 
     Handler content = new Handler(new Handler.Callback() {
@@ -66,13 +68,19 @@ public class PageControlFragment extends Fragment {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                url = urlView.getText().toString(); //format url here?
+
+                if (!urlView.getText().toString().startsWith("https://"))
+                    url = "https://" + urlView.getText().toString();
+                else
+                    url = urlView.getText().toString();
+
+              //  url = urlView.getText().toString(); //format url here?
                 listener.buttonPressed(url);
                 Log.i("url", "url: " + url);
                 isSearched();
+
             }
         });
-
         url = urlView.getText().toString();
 
         return view;
@@ -94,6 +102,8 @@ public class PageControlFragment extends Fragment {
     }
 
     public String getUrl(){
+
+
         return url;
     }
 

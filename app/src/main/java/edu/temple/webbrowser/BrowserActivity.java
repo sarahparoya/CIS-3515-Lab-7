@@ -21,10 +21,12 @@ import java.util.List;
 public class BrowserActivity extends AppCompatActivity implements PageControlFragment.WebMenuListener {
     private String url;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         Fragment pageControl = PageControlFragment.newInstance("url");
         Fragment pageView = PageViewerFragment.newInstance("test", "test");
@@ -39,6 +41,7 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
     public void buttonPressed(String url) {
         PageViewerFragment fragment = new PageViewerFragment();
         fragment.defineUrl(url);
+
         FragmentManager fm = getSupportFragmentManager();
         fm.beginTransaction()
                 .replace(R.id.browser, fragment)

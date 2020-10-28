@@ -72,5 +72,4 @@ public class PageViewerFragment extends Fragment {
     public void defineUrl(String url){
         this.input_url = url;
     }
-
 }
