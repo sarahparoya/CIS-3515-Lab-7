@@ -11,17 +11,15 @@
             android:id="@+id/page_control"
             android:layout_width="match_parent"
             android:layout_height="170dp"
-            android:background="#FFFFFF"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
-
         </FrameLayout>
 
+
         <FrameLayout
-            android:id="@+id/page_viewer"
+            android:id="@+id/page_viewer_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:foregroundTint="#D6D7D7"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
