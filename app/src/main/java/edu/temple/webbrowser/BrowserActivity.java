@@ -8,6 +8,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebViewFragment;
@@ -18,62 +19,23 @@ import android.widget.ImageButton;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BrowserActivity extends AppCompatActivity implements PageControlFragment.WebMenuListener {
-    private String url;
+public class BrowserActivity extends AppCompatActivity implements PageControlFragment.SendURLInterface, PageControlFragment.goBackInterface, PageControlFragment.goNextInterface, PageViewerFragment.SetURLInterface {
+    static PageControlFragment PageControlFragment = new PageControlFragment();
+    static PageViewerFragment PageViewerFragment = new PageViewerFragment();
 
+    PageControlFragment pageControlFragment;
+    PageViewerFragment pageViewerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("Browser Activity");
 
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
-        Fragment pageControl = PageControlFragment.newInstance("url");
-        Fragment pageView = PageViewerFragment.newInstance("test", "test");
-        FragmentManager fm = getSupportFragmentManager();
-        fm.beginTransaction()
-                .add(R.id.page_control, pageControl)
-                .add(R.id.page_viewer_fragment, pageView)
-                .commit();
-    }
-
-    @Override
-    public void buttonPressed(String url) {
-        PageViewerFragment fragment = new PageViewerFragment();
-        fragment.defineUrl(url);
-
-        FragmentManager fm = getSupportFragmentManager();
-        fm.beginTransaction()
-                .replace(R.id.browser, fragment)
-                .addToBackStack("add")
-                .commit();
-
-   /* PageControlFragment pageControlFragment;
-    PageViewerFragment pageViewerFragment;
-    EditText urlText;
-    ImageButton goButton;
-    WebView browser;
-
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        setTitle("Web Browser");
-
-        PageControlFragment pageControlFragment = new PageControlFragment();
-        PageViewerFragment pageViewerFragment = new PageViewerFragment();
-
-
-     //   fragmentList = new ArrayList<WebViewFragment>();
-     //   fragmentList.add(new WebViewFragment());
-
-        urlText =  findViewById(R.id.editURL);
-        goButton =  findViewById(R.id.btnGo);
-        browser = findViewById(R.id.browser);
-
+        pageControlFragment = new PageControlFragment();
+        pageViewerFragment = new PageViewerFragment();
 
         FragmentManager FM = getSupportFragmentManager();
 
@@ -81,25 +43,37 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
         FT.add(R.id.page_control, pageControlFragment);
         FT.add(R.id.page_viewer_fragment, pageViewerFragment);
         FT.commit();
+    }
+
+    public void SendURL(String URL){
+        String reqStr = "https://";
 
 
-     //   browser.setWebViewClient(new WebViewClient());
 
 
-       // Bundle bundle = new Bundle();
-        //bundle.putString("urlText", "From PageControlFragment");
+        if(!URL.substring(0,reqStr.length()).equals(reqStr)){
+            URL = reqStr.concat(URL);
+        }
 
-      //  PageViewerFragment.setArguments(bundle);
+        pageViewerFragment.setURL(URL);
 
-      /*  goButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                browser.loadUrl(urlText.getText().toString());
-                browser.getSettings().getJavaScriptEnabled();
-                browser.setWebViewClient(new WebViewClient());
-            }
-        });
+        pageControlFragment.setText(pageViewerFragment.getURL());
 
-    }*/
+
+    }
+
+    @Override
+    public void SetURL() {
+
+        pageControlFragment.setText(pageViewerFragment.getURL());
+    }
+
+    @Override
+    public void goBack() {
+        pageViewerFragment.goBack();
+    }
+
+    public void goNext() {
+        pageViewerFragment.goNext();
     }
 }

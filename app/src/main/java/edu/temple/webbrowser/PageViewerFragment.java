@@ -21,55 +21,101 @@ import java.util.ArrayList;
 
 public class PageViewerFragment extends Fragment {
 
-    private WebView webView;
-    private String input_url;
+    WebView WebBrowser;
 
-    Handler content = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            webView.loadUrl(input_url);
-            return false;
-        }
-    });
+    String reqStr = "https://";
+
+    ArrayList<String> urlStack = new ArrayList<String>();
+
+    int pageIndex = -1;
+
+    boolean clear = false;
+
     public PageViewerFragment() {
-        // Required empty public constructor
+
     }
 
     public static PageViewerFragment newInstance(String param1, String param2) {
         PageViewerFragment fragment = new PageViewerFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
+
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
 
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_page_viewer, container, false);
-        webView = (WebView) view.findViewById(R.id.browser);
+        View v = inflater.inflate(R.layout.fragment_page_viewer, container, false);
 
-        Thread thread = new Thread(){
+        WebBrowser = v.findViewById(R.id.browser);
+
+        WebBrowser.setWebViewClient(new WebViewClient(){
             @Override
-            public void run() {
-                Message message = Message.obtain();
-                message.obj = input_url;
-                content.sendMessage(message);
+            public void onPageFinished(WebView view, String url) {
+                if(!clear && pageIndex!=urlStack.size()-1){
+                    for(int i=pageIndex; i<urlStack.size(); i++){
+                        urlStack.remove(i);
+                    }
+                }
+                ((PageViewerFragment.SetURLInterface) getActivity()).SetURL();
+
+                if(!clear)pageIndex++;
+                if(!clear)urlStack.add(url);
+                Toast toast = Toast.makeText(view.getContext(), boolString(clear) + ", " + urlStack.size(), Toast.LENGTH_LONG);
+                toast.show();
+                clear = false;
             }
-        };
-        thread.start();
-        return view;
+        });
+
+
+        return v;
     }
 
-    public void defineUrl(String url){
-        this.input_url = url;
+    public String boolString(boolean b){
+        if(b) return "true";
+        return "false";
+    }
+
+    public void goBack(){
+
+        if(pageIndex != 0){
+            clear = true;
+            WebBrowser.loadUrl(urlStack.get(pageIndex-1));
+            pageIndex--;
+        }
+
+
+    }
+
+    public void goNext(){
+
+        if(pageIndex != urlStack.size()-1){
+            clear= true;
+            WebBrowser.loadUrl(urlStack.get(pageIndex+1));
+            pageIndex++;
+        }
+
+    }
+
+    public void setURL(String url) {
+
+
+
+        WebBrowser.loadUrl(url);
+
+    }
+
+    public String getURL(){
+        return WebBrowser.getUrl();
+    }
+
+    interface SetURLInterface {
+        void SetURL();
     }
 }

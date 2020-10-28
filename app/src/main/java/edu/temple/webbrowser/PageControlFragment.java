@@ -20,40 +20,24 @@ import android.widget.TextView;
 
 public class PageControlFragment extends Fragment {
 
+    EditText editTextURL;
+    ImageButton btnGo;
+    ImageButton btnNext;
+    ImageButton btnBack;
 
-    private WebMenuListener listener;
-    private String url;
-    private EditText urlView;
-    private ImageButton searchButton;
-
-
-    private boolean isSearched = false;
-
-    Handler content = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            urlView.setText((String) msg.obj);
-            return false;
-        }
-    });
     public PageControlFragment() {
-        // Required empty public constructor
+
     }
 
-    public static PageControlFragment newInstance(String url) {
+    public static PageControlFragment newInstance() {
         PageControlFragment fragment = new PageControlFragment();
-        Bundle args = new Bundle();
-        args.putString("url", url);
-        fragment.setArguments(args);
+
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            this.url = getArguments().getString("key");
-        }
 
     }
 
@@ -61,60 +45,53 @@ public class PageControlFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_page_control, container, false);
-        urlView = (EditText) view.findViewById(R.id.editURL);
-        searchButton = (ImageButton) view.findViewById(R.id.btnGo);
+        View v = inflater.inflate(R.layout.fragment_page_control, container, false);
 
-        searchButton.setOnClickListener(new View.OnClickListener() {
+        editTextURL = v.findViewById(R.id.editURL);
+        btnGo = v.findViewById(R.id.btnGo);
+        btnBack = v.findViewById(R.id.btnLeft);
+        btnNext = v.findViewById(R.id.btnRight);
+
+        btnGo.setOnClickListener(new View.OnClickListener() {
+
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                ((SendURLInterface) getActivity()).SendURL(editTextURL.getText().toString());
+            }
 
-                if (!urlView.getText().toString().startsWith("https://"))
-                    url = "https://" + urlView.getText().toString();
-                else
-                    url = urlView.getText().toString();
+        });
 
-              //  url = urlView.getText().toString(); //format url here?
-                listener.buttonPressed(url);
-                Log.i("url", "url: " + url);
-                isSearched();
-
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((goBackInterface) getActivity()).goBack();
             }
         });
-        url = urlView.getText().toString();
 
-        return view;
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((goNextInterface) getActivity()).goNext();
+            }
+        });
+
+        return v;
     }
 
-    @Override
-    public void onAttach(Context context){
-        super.onAttach(context);
-        try{
-            listener = (WebMenuListener) context;
-        }catch (ClassCastException e){
-            throw new ClassCastException(e.getLocalizedMessage());
-        }
+    public void setText(String txt){
+        editTextURL.setText(txt);
     }
 
-    public boolean isSearched(){
-        this.isSearched = true;
-        return true;
+    interface SendURLInterface {
+        void SendURL(String URL);
     }
 
-    public String getUrl(){
-
-
-        return url;
+    interface goBackInterface {
+        void goBack();
     }
 
-    public boolean validateNetwork(){
-        ConnectivityManager conn = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        Network networkInfo = conn.getActiveNetwork();
-        return conn.isActiveNetworkMetered(); // check that is correct
-    }
-
-    public interface WebMenuListener{
-        public void buttonPressed(String url);
+    interface goNextInterface {
+        void goNext();
     }
 
 
