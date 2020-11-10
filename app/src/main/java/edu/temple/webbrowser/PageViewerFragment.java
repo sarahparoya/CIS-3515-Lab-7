@@ -23,6 +23,8 @@ public class PageViewerFragment extends Fragment {
 
     WebView WebBrowser;
 
+    //hehehe
+
     String reqStr = "https://";
 
     ArrayList<String> urlStack = new ArrayList<String>();
