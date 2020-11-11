@@ -20,7 +20,7 @@ public class PageControlFragment extends Fragment {
     ImageButton btnNext;
     ImageButton btnBack;
 
-    String loadText = "ERRR";
+    String loadText = "";
 
     public PageControlFragment() {
         // Required empty public constructor
