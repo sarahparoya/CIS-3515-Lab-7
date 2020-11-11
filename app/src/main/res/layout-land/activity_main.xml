@@ -1,6 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:id="@+id/landscape"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/page_control"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+
+
+    <FrameLayout
+        android:id="@+id/browser_control"
+        android:layout_width="275dp"
+        android:layout_height="35dp"
+        />
+
+    <FrameLayout
+        android:id="@+id/page_list"
+        android:layout_width="275dp"
+        android:layout_height="match_parent">
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/page_display"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="275dp"
+        android:layout_marginTop="-360dp">
+
+
+    </FrameLayout>
+
 
 </LinearLayout>
