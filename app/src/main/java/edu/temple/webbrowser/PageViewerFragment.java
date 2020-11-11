@@ -100,23 +100,26 @@ public class PageViewerFragment extends Fragment {
 
     }
 
-    public void setURL(String url) {
-
-
+    public void setURL(String url)
+    {
 
         browser.loadUrl(url);
 
     }
 
-    public String getURL(){
+    public String getURL()
+    {
+
         return browser.getUrl();
     }
 
-    interface SetURLInterface {
+    interface SetURLInterface
+    {
         void SetURL();
     }
 
-    interface resetUrlInterface{
+    interface resetUrlInterface
+    {
         void resetUrl();
     }
 }

@@ -1,5 +1,6 @@
 package edu.temple.webbrowser;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -20,7 +21,7 @@ import android.widget.ImageButton;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BrowserActivity extends AppCompatActivity {
+public class BrowserActivity extends AppCompatActivity implements PageControlFragment.SendURLInterface, PageControlFragment.goBackInterface, PageControlFragment.goNextInterface, PageViewerFragment.SetURLInterface, PageViewerFragment.resetUrlInterface {
 
 
     FragmentManager fm;
@@ -70,11 +71,44 @@ public class BrowserActivity extends AppCompatActivity {
         }
     }
 
-      /* if(phoneMode)
-        {
-            fm.beginTransaction()
-                    .add(R.id.page_list,pageListFragment)
-                    .commit();
-        }*/
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
 
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    public void SendURL(String URL){
+        String reqStr = "https://";
+        if(!URL.substring(0,reqStr.length()).equals(reqStr)){
+            URL = reqStr.concat(URL);
+        }
+
+        pagerFragment.setURL(URL);
+
+        pageControlFragment.setText(pagerFragment.getURL());
+    }
+
+    @Override
+    public void SetURL() {
+
+        pageControlFragment.setText(pagerFragment.getURL());
+    }
+
+    @Override
+    public void goBack() {
+        pagerFragment.goBack();
+    }
+
+    public void goNext() {
+        pagerFragment.goNext();
+    }
+
+    public void resetUrl(){
+        String reset = pageControlFragment.getText();
+        pagerFragment.setURL(reset);
+    }
 }
