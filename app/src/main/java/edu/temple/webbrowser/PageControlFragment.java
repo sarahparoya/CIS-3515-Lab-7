@@ -20,7 +20,7 @@ public class PageControlFragment extends Fragment {
     ImageButton btnNext;
     ImageButton btnBack;
 
-    String loadText = "";
+    String loadText = "ERRR";
 
     public PageControlFragment() {
         // Required empty public constructor
@@ -87,7 +87,7 @@ public class PageControlFragment extends Fragment {
     }
 
     public void setText(String txt){
-        editTextURL.setText(txt);
+        if(editTextURL != null)editTextURL.setText(txt);
     }
 
     public String getText() { return editTextURL.getText().toString(); }
@@ -102,5 +102,9 @@ public class PageControlFragment extends Fragment {
 
     interface goNextInterface {
         void goNext();
+    }
+
+    interface setURLInterface{
+        void setURL();
     }
 }

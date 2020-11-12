@@ -11,7 +11,7 @@ import android.widget.ImageButton;
 
 public class BrowserControlFragment extends Fragment {
 
-    ImageButton browserBtn;
+    ImageButton btnAdd;
 
     public BrowserControlFragment() {
         // Required empty public constructor
@@ -20,24 +20,34 @@ public class BrowserControlFragment extends Fragment {
 
     public static BrowserControlFragment newInstance(String param1, String param2) {
         BrowserControlFragment fragment = new BrowserControlFragment();
-        /*Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);*/
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_browser_control, container, false);
 
+        btnAdd = v.findViewById(R.id.browerControlButton);
+
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((BrowserControlFragment.AddPageInterface) getActivity()).addPage();
+            }
+        });
 
         return v;
+    }
+
+    interface AddPageInterface {
+        void addPage();
     }
 }

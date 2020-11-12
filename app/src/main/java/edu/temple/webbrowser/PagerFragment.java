@@ -11,60 +11,94 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+
 
 public class PagerFragment extends Fragment {
 
 
 
-    PageAdapter mAdapter;
+    private PageAdapter mAdapter;
 
-    ViewPager mPager;
+    private ViewPager mPager;
 
-    View v;
+    private View v;
+
+    public PagerFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Watch for button clicks.
-//        Button button = (Button)findViewById(R.id.goto_first);
-//        button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mPager.setCurrentItem(0);
-//            }
-//        });
-//        button = (Button)findViewById(R.id.goto_last);
-//        button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mPager.setCurrentItem(mPager.getCurrentItem()+1);
-//            }
-//        });
     }
 
+    public static PagerFragment newInstance(ArrayList<PageViewerFragment> PVList) {
+        PagerFragment fragment = new PagerFragment();
+        return fragment;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    interface getListInterface{
+        ArrayList<PageViewerFragment> getList();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        notifyChange();
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.fragment_pager, container, false);
 
+        setRetainInstance(true);
+
         mPager = v.findViewById(R.id.pager);
-        mAdapter = new PageAdapter(getFragmentManager());
+        mAdapter = new PageAdapter(getFragmentManager(), ((PagerFragment.getListInterface) getActivity()).getList());
+
         mPager.setAdapter(mAdapter);
+
+        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                ((PageControlFragment.setURLInterface) getActivity()).setURL();
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                ((PageControlFragment.setURLInterface) getActivity()).setURL();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                ((PageControlFragment.setURLInterface) getActivity()).setURL();
+            }
+
+
+        });
 
         return v;
     }
 
-    public void setURL(String url) {
+    public void notifyChange(){
+        mAdapter.notifyDataSetChanged();
     }
 
-    public String getURL() {
-        return null;
+    public int getCurrent(){
+        return mPager.getCurrentItem();
     }
 
-    public void goBack() {
+
+    public void goToPage(int num){
+        mPager.setCurrentItem(num);
     }
 
-    public void goNext() {
-    }
+
 }
