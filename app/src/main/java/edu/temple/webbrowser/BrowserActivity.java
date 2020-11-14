@@ -26,10 +26,10 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
 
 
 
-    PageControlFragment PCFrag;
-    PagerFragment PVFrag;
-    BrowserControlFragment BCFrag;
-    PageListFragment PLFrag;
+    PageControlFragment pageControlFragment;
+    PagerFragment pagerFragment;
+    BrowserControlFragment browserControlFragment;
+    PageListFragment pageListFragment;
 
 
     ArrayList<PageViewerFragment> PVList;
@@ -47,42 +47,42 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
             PVList.add(new PageViewerFragment());
 
 
-            PCFrag = new PageControlFragment();
-            BCFrag = new BrowserControlFragment();
+            pageControlFragment = new PageControlFragment();
+            browserControlFragment = new BrowserControlFragment();
 
-            PVFrag = new PagerFragment();
+            pagerFragment = new PagerFragment();
 
             FragmentManager FM = getSupportFragmentManager();
 
             FragmentTransaction FT = FM.beginTransaction();
 
 
-            FT.add(R.id.page_viewer, PVFrag);
-            FT.add(R.id.page_control, PCFrag);
-            FT.add(R.id.browser_control, BCFrag);
+            FT.add(R.id.page_viewer, pagerFragment);
+            FT.add(R.id.page_control, pageControlFragment);
+            FT.add(R.id.browser_control, browserControlFragment);
             if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-                PLFrag = new PageListFragment();
-                FT.add(R.id.page_list, PLFrag);
+                pageListFragment = new PageListFragment();
+                FT.add(R.id.page_list, pageListFragment);
             }
             FT.commit();
         } else {
             PVList = savedInstanceState.getParcelableArrayList("TheList");
             Log.i("THE LIST SIZE", String.valueOf(PVList.size()));
 
-            PCFrag = (PageControlFragment) getSupportFragmentManager().findFragmentById(R.id.page_control);
-            BCFrag = (BrowserControlFragment) getSupportFragmentManager().findFragmentById(R.id.browser_control);
-            PVFrag = (PagerFragment) getSupportFragmentManager().findFragmentById(R.id.page_viewer);
+            pageControlFragment = (PageControlFragment) getSupportFragmentManager().findFragmentById(R.id.page_control);
+            browserControlFragment = (BrowserControlFragment) getSupportFragmentManager().findFragmentById(R.id.browser_control);
+            pagerFragment = (PagerFragment) getSupportFragmentManager().findFragmentById(R.id.page_viewer);
             if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
                 Log.i("ACT>>>>>>>>>>", "ACT");
-                if(PLFrag==null){
-                    PLFrag = new PageListFragment();
+                if(pageListFragment==null){
+                    pageListFragment = new PageListFragment();
                     FragmentManager FM = getSupportFragmentManager();
 
                     FragmentTransaction FT = FM.beginTransaction();
-                    FT.add(R.id.page_list, PLFrag);
+                    FT.add(R.id.page_list, pageListFragment);
                     FT.commit();
                 } else {
-                    PLFrag = (PageListFragment) getSupportFragmentManager().findFragmentById(R.id.page_list);
+                    pageListFragment = (PageListFragment) getSupportFragmentManager().findFragmentById(R.id.page_list);
                 }
 
             }
@@ -101,47 +101,52 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
             URL = reqStr.concat(URL);
         }
 
-        PVList.get(PVFrag.getCurrent()).setURL(URL);
-        PVFrag.notifyChange();
-        if(PLFrag!=null) PLFrag.notifyChange();
+        PVList.get(pagerFragment.getCurrent()).setURL(URL);
+        pagerFragment.notifyChange();
+        if(pageListFragment!=null)
+            pageListFragment.notifyChange();
 
-        PCFrag.setText(PVList.get(PVFrag.getCurrent()).getURL());
+        pageControlFragment.setText(PVList.get(pagerFragment.getCurrent()).getURL());
     }
 
     @Override
     public void goBack() {
-        PVList.get(PVFrag.getCurrent()).goBack();
-        if(PLFrag!=null) PLFrag.notifyChange();
-        setTitle(PVList.get(PVFrag.getCurrent()).getTitle());
+        PVList.get(pagerFragment.getCurrent()).goBack();
+        if(pageListFragment!=null)
+            pageListFragment.notifyChange();
+        setTitle(PVList.get(pagerFragment.getCurrent()).getTitle());
     }
 
     public void goNext() {
-        PVList.get(PVFrag.getCurrent()).goNext();
-        if(PLFrag!=null) PLFrag.notifyChange();
-        setTitle(PVList.get(PVFrag.getCurrent()).getTitle());
+        PVList.get(pagerFragment.getCurrent()).goNext();
+        if(pageListFragment!=null)
+            pageListFragment.notifyChange();
+        setTitle(PVList.get(pagerFragment.getCurrent()).getTitle());
     }
 
 
     @Override
     public void addPage() {
         PVList.add(new PageViewerFragment());
-        PVFrag.notifyChange();
-        if(PLFrag!=null) PLFrag.notifyChange();
-        PVFrag.goToPage(PVList.size()-1);
-        setTitle(PVList.get(PVFrag.getCurrent()).getTitle());
+        pagerFragment.notifyChange();
+        if(pageListFragment!=null)
+            pageListFragment.notifyChange();
+        pagerFragment.goToPage(PVList.size()-1);
+        setTitle(PVList.get(pagerFragment.getCurrent()).getTitle());
     }
 
     public void goToPage(int i){
-        PVFrag.goToPage(i);
-        if(PLFrag!=null) PLFrag.notifyChange();
-        setTitle(PVList.get(PVFrag.getCurrent()).getTitle());
+        pagerFragment.goToPage(i);
+        if(pageListFragment!=null) pageListFragment.notifyChange();
+        setTitle(PVList.get(pagerFragment.getCurrent()).getTitle());
     }
 
     @Override
     public void setURL() {
-        PCFrag.setText(PVList.get(PVFrag.getCurrent()).getURL());
-        if(PLFrag!=null) PLFrag.notifyChange();
-        setTitle(PVList.get(PVFrag.getCurrent()).getTitle());
+        pageControlFragment.setText(PVList.get(pagerFragment.getCurrent()).getURL());
+        if(pageListFragment!=null)
+            pageListFragment.notifyChange();
+        setTitle(PVList.get(pagerFragment.getCurrent()).getTitle());
     }
 
 

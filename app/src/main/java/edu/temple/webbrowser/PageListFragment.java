@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class PageListFragment extends Fragment {
 
-    ListView listPages;
+    ListView listView;
     private PageListAdapter mAdapter;
 
     public PageListFragment() {
@@ -46,11 +46,11 @@ public class PageListFragment extends Fragment {
 
         View v =inflater.inflate(R.layout.fragment_page_list, container, false);
 
-        listPages = v.findViewById(R.id.pageListView);
+        listView = v.findViewById(R.id.pageListView);
         mAdapter = new PageListAdapter(getContext(), ((PagerFragment.getListInterface) getActivity()).getList());
-        listPages.setAdapter(mAdapter);
+        listView.setAdapter(mAdapter);
 
-        listPages.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ((PageListFragment.goToPageInterface) getActivity()).goToPage(i);
