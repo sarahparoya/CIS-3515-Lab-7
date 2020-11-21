@@ -65,7 +65,7 @@ public class PageViewerFragment extends Fragment implements Parcelable {
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState == null) {
             //browser.loadUrl(getArguments().getString("URL_"));
-            browser.loadUrl("https://google.com");
+            browser.loadUrl("");
         } else {
             browser.restoreState(savedInstanceState);
         }
