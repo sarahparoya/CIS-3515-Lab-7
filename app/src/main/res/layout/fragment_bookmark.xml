@@ -6,9 +6,10 @@
     tools:context=".BookmarkFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <ListView
+        android:id="@+id/listBookmarks"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-
+        android:background="#BCC2DA" />
 </FrameLayout>
