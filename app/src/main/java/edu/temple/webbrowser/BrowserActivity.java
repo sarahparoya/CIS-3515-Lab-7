@@ -7,6 +7,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,23 +19,37 @@ import android.webkit.WebViewClient;
 import android.webkit.WebViewFragment;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import java.util.ArrayList;
 import java.util.List;
+public class BrowserActivity extends AppCompatActivity
+        implements PageControlFragment.SendURLInterface, PageControlFragment.goBackInterface, PageControlFragment.goNextInterface,
+        BrowserControlFragment.AddPageInterface, PageControlFragment.setURLInterface, PagerFragment.getListInterface, PageListFragment.goToPageInterface,
+        BrowserControlFragment.SwapFragsInterface, BrowserControlFragment.addBookmarkInterface{
 
-public class BrowserActivity extends AppCompatActivity implements PageControlFragment.SendURLInterface, PageControlFragment.goBackInterface, PageControlFragment.goNextInterface, BrowserControlFragment.AddPageInterface, PageControlFragment.setURLInterface, PagerFragment.getListInterface, PageListFragment.goToPageInterface {
 
 
+    PageControlFragment PCFrag;
+    PagerFragment PVFrag;
+    BrowserControlFragment BCFrag;
+    PageListFragment PLFrag;
+    BookmarkFragment BMFrag;
 
-    PageControlFragment pageControlFragment;
-    PagerFragment pagerFragment;
-    BrowserControlFragment browserControlFragment;
-    PageListFragment pageListFragment;
+    FrameLayout BookmarkContainer;
 
 
     ArrayList<PageViewerFragment> PVList;
 
+
+
+    protected void onStop(){
+        super.onStop();
+        SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
+        editor.putStringSet("bookmarks", BMFrag.getBookmarkSet());
+        editor.apply();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,48 +57,60 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
         setContentView(R.layout.activity_main);
         setTitle("Browser Activity");
 
-        if(getSupportFragmentManager().findFragmentById(R.id.page_viewer) == null && getSupportFragmentManager().findFragmentById(R.id.page_control) == null){
+        SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
 
+        if(getSupportFragmentManager().findFragmentById(R.id.page_viewer) == null && getSupportFragmentManager().findFragmentById(R.id.page_control) == null){
+            BookmarkContainer = findViewById(R.id.bookmark_view);
             PVList = new ArrayList<PageViewerFragment>();
             PVList.add(new PageViewerFragment());
 
+//            Set<String> BMSet = prefs.getStringSet("bookmarks", null);
 
-            pageControlFragment = new PageControlFragment();
-            browserControlFragment = new BrowserControlFragment();
+            BMFrag = new BookmarkFragment();
+//            if(BMSet!=null && BMSet.size()>0){
+////                for (String str : BMSet){
+////                    BMFrag.addBookmark(str);
+////                }
+//            }
 
-            pagerFragment = new PagerFragment();
+
+            PCFrag = new PageControlFragment();
+            BCFrag = new BrowserControlFragment();
+
+            PVFrag = new PagerFragment();
 
             FragmentManager FM = getSupportFragmentManager();
 
             FragmentTransaction FT = FM.beginTransaction();
 
 
-            FT.add(R.id.page_viewer, pagerFragment);
-            FT.add(R.id.page_control, pageControlFragment);
-            FT.add(R.id.browser_control, browserControlFragment);
+            FT.add(R.id.page_viewer, PVFrag);
+            FT.add(R.id.page_control, PCFrag);
+            FT.add(R.id.browser_control, BCFrag);
+            FT.add(R.id.bookmark_view, BMFrag);
             if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-                pageListFragment = new PageListFragment();
-                FT.add(R.id.page_list, pageListFragment);
+                PLFrag = new PageListFragment();
+                FT.add(R.id.page_list, PLFrag);
             }
             FT.commit();
         } else {
             PVList = savedInstanceState.getParcelableArrayList("TheList");
             Log.i("THE LIST SIZE", String.valueOf(PVList.size()));
 
-            pageControlFragment = (PageControlFragment) getSupportFragmentManager().findFragmentById(R.id.page_control);
-            browserControlFragment = (BrowserControlFragment) getSupportFragmentManager().findFragmentById(R.id.browser_control);
-            pagerFragment = (PagerFragment) getSupportFragmentManager().findFragmentById(R.id.page_viewer);
+            PCFrag = (PageControlFragment) getSupportFragmentManager().findFragmentById(R.id.page_control);
+            BCFrag = (BrowserControlFragment) getSupportFragmentManager().findFragmentById(R.id.browser_control);
+            PVFrag = (PagerFragment) getSupportFragmentManager().findFragmentById(R.id.page_viewer);
+            BMFrag = (BookmarkFragment) getSupportFragmentManager().findFragmentById(R.id.bookmark_view);
             if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-                Log.i("ACT>>>>>>>>>>", "ACT");
-                if(pageListFragment==null){
-                    pageListFragment = new PageListFragment();
+                if(PLFrag==null){
+                    PLFrag = new PageListFragment();
                     FragmentManager FM = getSupportFragmentManager();
 
                     FragmentTransaction FT = FM.beginTransaction();
-                    FT.add(R.id.page_list, pageListFragment);
+                    FT.add(R.id.page_list, PLFrag);
                     FT.commit();
                 } else {
-                    pageListFragment = (PageListFragment) getSupportFragmentManager().findFragmentById(R.id.page_list);
+                    PLFrag = (PageListFragment) getSupportFragmentManager().findFragmentById(R.id.page_list);
                 }
 
             }
@@ -101,57 +129,67 @@ public class BrowserActivity extends AppCompatActivity implements PageControlFra
             URL = reqStr.concat(URL);
         }
 
-        PVList.get(pagerFragment.getCurrent()).setURL(URL);
-        pagerFragment.notifyChange();
-        if(pageListFragment!=null)
-            pageListFragment.notifyChange();
+        PVList.get(PVFrag.getCurrent()).setURL(URL);
+        PVFrag.notifyChange();
+        if(PLFrag!=null) PLFrag.notifyChange();
 
-        pageControlFragment.setText(PVList.get(pagerFragment.getCurrent()).getURL());
+        PCFrag.setText(PVList.get(PVFrag.getCurrent()).getURL());
     }
 
     @Override
     public void goBack() {
-        PVList.get(pagerFragment.getCurrent()).goBack();
-        if(pageListFragment!=null)
-            pageListFragment.notifyChange();
-        setTitle(PVList.get(pagerFragment.getCurrent()).getTitle());
+        PVList.get(PVFrag.getCurrent()).goBack();
+        if(PLFrag!=null) PLFrag.notifyChange();
+        setTitle(PVList.get(PVFrag.getCurrent()).getTitle());
     }
 
     public void goNext() {
-        PVList.get(pagerFragment.getCurrent()).goNext();
-        if(pageListFragment!=null)
-            pageListFragment.notifyChange();
-        setTitle(PVList.get(pagerFragment.getCurrent()).getTitle());
+        PVList.get(PVFrag.getCurrent()).goNext();
+        if(PLFrag!=null) PLFrag.notifyChange();
+        setTitle(PVList.get(PVFrag.getCurrent()).getTitle());
     }
 
 
     @Override
     public void addPage() {
         PVList.add(new PageViewerFragment());
-        pagerFragment.notifyChange();
-        if(pageListFragment!=null)
-            pageListFragment.notifyChange();
-        pagerFragment.goToPage(PVList.size()-1);
-        setTitle(PVList.get(pagerFragment.getCurrent()).getTitle());
+        PVFrag.notifyChange();
+        if(PLFrag!=null) PLFrag.notifyChange();
+        PVFrag.goToPage(PVList.size()-1);
+        setTitle(PVList.get(PVFrag.getCurrent()).getTitle());
     }
 
     public void goToPage(int i){
-        pagerFragment.goToPage(i);
-        if(pageListFragment!=null) pageListFragment.notifyChange();
-        setTitle(PVList.get(pagerFragment.getCurrent()).getTitle());
+        PVFrag.goToPage(i);
+        if(PLFrag!=null) PLFrag.notifyChange();
+        setTitle(PVList.get(PVFrag.getCurrent()).getTitle());
     }
 
     @Override
     public void setURL() {
-        pageControlFragment.setText(PVList.get(pagerFragment.getCurrent()).getURL());
-        if(pageListFragment!=null)
-            pageListFragment.notifyChange();
-        setTitle(PVList.get(pagerFragment.getCurrent()).getTitle());
+        PCFrag.setText(PVList.get(PVFrag.getCurrent()).getURL());
+        if(PLFrag!=null) PLFrag.notifyChange();
+        setTitle(PVList.get(PVFrag.getCurrent()).getTitle());
     }
 
 
     @Override
     public ArrayList<PageViewerFragment> getList() {
         return PVList;
+    }
+
+    @Override
+    public void swapFrags() {
+        if(BookmarkContainer.getVisibility() == View.VISIBLE){
+            BookmarkContainer.setVisibility(View.INVISIBLE);
+        } else {
+            BookmarkContainer.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void addBookmark() {
+        String s = PVList.get(PVFrag.getCurrent()).getURL();
+        BMFrag.addBookmark(s);
     }
 }

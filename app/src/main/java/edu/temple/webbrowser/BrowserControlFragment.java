@@ -12,6 +12,8 @@ import android.widget.ImageButton;
 public class BrowserControlFragment extends Fragment {
 
     ImageButton btnAdd;
+    ImageButton btnBookmarks;
+    ImageButton btnSave;
 
     public BrowserControlFragment() {
         // Required empty public constructor
@@ -35,7 +37,9 @@ public class BrowserControlFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_browser_control, container, false);
 
-        btnAdd = v.findViewById(R.id.browerControlButton);
+        btnAdd = v.findViewById(R.id.btnAdd);
+        btnBookmarks = v.findViewById(R.id.btnBookmarks);
+        btnSave = v.findViewById(R.id.btnSave);
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,10 +48,33 @@ public class BrowserControlFragment extends Fragment {
             }
         });
 
+        btnBookmarks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((BrowserControlFragment.SwapFragsInterface) getActivity()).swapFrags();
+            }
+        });
+
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((BrowserControlFragment.addBookmarkInterface) getActivity()).addBookmark();
+            }
+        });
+
+
         return v;
     }
 
     interface AddPageInterface {
         void addPage();
+    }
+
+    interface SwapFragsInterface{
+        void swapFrags();
+    }
+
+    interface addBookmarkInterface{
+        void addBookmark();
     }
 }
