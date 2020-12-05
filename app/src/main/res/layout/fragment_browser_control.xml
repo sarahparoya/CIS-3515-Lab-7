@@ -1,29 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frmBrowserControl"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="0dp"
+    android:layout_height="wrap_content"
     tools:context=".BrowserControlFragment">
 
     <ImageButton
-        android:id="@+id/btnAdd"
-        android:layout_width="179dp"
+        android:id="@+id/newPageButton"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_input_add" />
+        android:layout_marginTop="8dp"
+        android:background="@android:drawable/screen_background_light_transparent"
+        android:src="@android:drawable/ic_menu_add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/newBookmark"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/btnSave"
-        android:layout_width="141dp"
+        android:id="@+id/newBookmark"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:src="@android:drawable/btn_star" />
+        android:layout_marginTop="8dp"
+        android:background="@android:drawable/screen_background_light_transparent"
+        android:src="@android:drawable/ic_menu_save"
+        app:layout_constraintEnd_toStartOf="@+id/newPageButton"
+        app:layout_constraintStart_toEndOf="@+id/showBookmarks"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/btnBookmarks"
-        android:layout_width="115dp"
+        android:id="@+id/showBookmarks"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_input_get" />
-</LinearLayout>
+        android:layout_marginTop="8dp"
+        android:background="@android:drawable/screen_background_light_transparent"
+        android:src="@android:drawable/ic_input_get"
+        app:layout_constraintEnd_toStartOf="@+id/newBookmark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,8 @@
 package edu.temple.webbrowser;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,31 +11,24 @@ import androidx.fragment.app.Fragment;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-
 
 public class PageViewerFragment extends Fragment implements Parcelable {
 
-    WebView browser;
+    private static final String URL_KEY = "url";
 
-    String reqStr = "https://";
+    private WebView webView;
+    private PageViewerInterface browserActivity;
 
-    public Context activity;
+    private String url;
 
-    public PageViewerFragment() {
-        // Required empty public constructor
-    }
 
-    public PageViewerFragment(Parcel in) {
-        browser.restoreState(in.readBundle());
+    protected PageViewerFragment(Parcel in) {
+        url = in.readString();
     }
 
     public static final Creator<PageViewerFragment> CREATOR = new Creator<PageViewerFragment>() {
@@ -49,119 +43,127 @@ public class PageViewerFragment extends Fragment implements Parcelable {
         }
     };
 
-    public static PageViewerFragment newInstance() {
+    public static PageViewerFragment newInstance(String url) {
         PageViewerFragment fragment = new PageViewerFragment();
-
+        Bundle bundle = new Bundle();
+        bundle.putString(URL_KEY, url);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
+    public PageViewerFragment() {}
+
+    // Save reference to parent
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        browser.saveState(outState);
-    }
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState == null) {
-            //browser.loadUrl(getArguments().getString("URL_"));
-            browser.loadUrl("https://google.com");
-        } else {
-            browser.restoreState(savedInstanceState);
-        }
-
-
-
-    }
-
-    public String getTitle(){
-        return browser.getTitle();
-    }
-
-    @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
-        this.activity = context;
-
-        Log.i("CONTEXT",  "context: " + this.activity);
+        if (context instanceof PageViewerInterface) {
+            browserActivity = (PageViewerInterface) context;
+        } else {
+            throw new RuntimeException("You must implement PageViewerInterface to attach this fragment");
+        }
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        this.activity = null;
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            url = getArguments().getString(URL_KEY);
+        }
     }
 
-
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_page_viewer, container, false);
+        View l = inflater.inflate(R.layout.fragment_page_viewer, container, false);
 
-        browser = v.findViewById(R.id.browser);
-        browser.setWebViewClient(new WebViewClient());
-
-        final Context act = this.activity;
-
-
-        browser.setWebViewClient(new WebViewClient(){
-
+        webView = l.findViewById(R.id.webView);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.setWebViewClient(new WebViewClient(){
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                // Inform parent activity that URL is changing
+                browserActivity.updateUrl(url);
+            }
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                Log.i("CONTEXT",  "context: " + act);
-                ((PageControlFragment.setURLInterface) act).setURL();
+                super.onPageFinished(view, url);
+                browserActivity.updateTitle(webView.getTitle());
             }
         });
 
-
-        return v;
-    }
-
-    public String boolString(boolean b){
-        if(b) return "true";
-        return "false";
-    }
-
-    public void goBack(){
-
-
-
-        Log.i("Back",  "back");
-        if(browser.canGoBack()){
-            browser.goBack();
+        // Restore WebView settings
+        if (savedInstanceState != null)
+            webView.restoreState(savedInstanceState);
+        else {
+            if (url != null) {
+                webView.loadUrl(url);
+            } else {
+                browserActivity.updateUrl("");
+            }
         }
 
-
+        return l;
     }
 
-    public void goNext(){
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
 
-        Log.i("Next",  "next");
-        if(browser.canGoForward()){
-            browser.goForward();
-        }
-
+        // Store URL and previous/back in case fragment is restarted
+        webView.saveState(outState);
     }
 
-    public void setURL(String url) {
-        Log.i("URL",  " url: " + url);
-        Log.i("BROWSER",  " browser: " + browser);
-        browser.loadUrl(url);
+    /**
+     * Load provided URL in webview
+     * @param url to load
+     */
+    public void go (String url) {
+        webView.loadUrl(url);
     }
 
-    public String testBrowser(){
-        return browser.getUrl();
+    /**
+     * Go to previous page
+     */
+    public void back () {
+        webView.goBack();
     }
 
-    public String getURL(){
-        return browser.getUrl();
+    /**
+     * Go to next page
+     */
+    public void forward () {
+        webView.goForward();
+    }
+
+    /**
+     * Get the title of the page currently being displayed,
+     * or the page's URL if title not available when requested
+     * @return the title of the page currently being viewed
+     */
+    public String getTitle() {
+        String title;
+        if (webView != null) {
+            title = webView.getTitle();
+            return title == null || title.isEmpty() ? webView.getUrl() : title;
+        } else
+            return "Blank Page";
+    }
+
+    /**
+     * Get the URL of the page currently being displayed
+     * @return the URL of the page currently being viewed
+     */
+    public String getUrl() {
+        if (webView != null)
+            return webView.getUrl();
+        else
+            return "";
     }
 
     @Override
@@ -170,11 +172,12 @@ public class PageViewerFragment extends Fragment implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        Bundle bun = new Bundle();
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(url);
+    }
 
-        browser.saveState(bun);
-
-        parcel.writeBundle(bun);
+    interface PageViewerInterface {
+        void updateUrl(String url);
+        void updateTitle(String title);
     }
 }

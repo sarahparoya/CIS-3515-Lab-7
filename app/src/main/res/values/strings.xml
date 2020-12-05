@@ -1,9 +1,10 @@
 <resources>
-    <string name="app_name">WebBrowser</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="page_control_back"><![CDATA[<<]]></string>
-    <string name="page_control_forward"><![CDATA[>>]]></string>
+    <string name="app_name">aBrowser</string>
+    <string name="url">Enter your URL</string>
+    <string name="page_control_back">Back</string>
+    <string name="page_control_forward">Forward</string>
     <string name="page_control_go">Go</string>
-    <string name="url">url</string>
+    <string name="bookmark_saved_message">Bookmark Saved</string>
+    <string name="delete_bookmark_confirmation">Delete %1$s?</string>
+    <string name="bookmarks_close_window">Close</string>
 </resources>

@@ -13,72 +13,74 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-
-import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-
 
 public class PageListFragment extends Fragment {
 
-    ListView listPages;
-    private PageListAdapter mAdapter;
+    private PageListInterface browserActivity;
 
-    public PageListFragment() {
-        // Required empty public constructor
-    }
+    private ListView listView;
+    private ArrayList<PageViewerFragment> pages;
 
-    public static PageListFragment newInstance() {
+    private static final String PAGES_KEY = "pages";
+
+    public PageListFragment() {}
+
+    public static PageListFragment newInstance(ArrayList<PageViewerFragment> pages) {
         PageListFragment fragment = new PageListFragment();
-
+        Bundle args = new Bundle();
+        args.putSerializable(PAGES_KEY, pages);
+        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            pages = (ArrayList) getArguments().getSerializable(PAGES_KEY);
+        }
+    }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        if (context instanceof PageListInterface) {
+            browserActivity = (PageListInterface) context;
+        } else {
+            throw new RuntimeException("You must implement PageListInterface before attaching this fragment");
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View l = inflater.inflate(R.layout.fragment_page_list, container, false);
+        listView = l.findViewById(R.id.listView);
+        listView.setAdapter(new PageListAdapter(getActivity(), pages));
 
-
-
-        View v =inflater.inflate(R.layout.fragment_page_list, container, false);
-
-        listPages = v.findViewById(R.id.listPages);
-        mAdapter = new PageListAdapter(getContext(), ((PagerFragment.getListInterface) getActivity()).getList());
-        listPages.setAdapter(mAdapter);
-
-        listPages.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ((PageListFragment.goToPageInterface) getActivity()).goToPage(i);
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                browserActivity.pageSelected(position);
             }
         });
 
-        Log.i("THE ADAPTER", ""+mAdapter);
-
-        return v;
+        return l;
     }
 
-    interface goToPageInterface{
-        void goToPage(int i);
+    /**
+     * Update the list of websites when a new page added or changed
+     */
+    public void notifyWebsitesChanged() {
+        if (listView != null)
+            ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
     }
 
-    public void notifyChange(){
-        if(mAdapter!=null) mAdapter.notifyDataSetChanged();
+    interface PageListInterface {
+        void pageSelected(int position);
     }
+
 }

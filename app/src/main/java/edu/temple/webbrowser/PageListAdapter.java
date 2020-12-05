@@ -1,55 +1,54 @@
 package edu.temple.webbrowser;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ListAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class PageListAdapter extends BaseAdapter implements ListAdapter {
+public class PageListAdapter extends BaseAdapter {
 
-    Context context;
-    ArrayList<PageViewerFragment> PVList;
+    private Context context;
+    private ArrayList<PageViewerFragment> pages;
 
-
-    public PageListAdapter(Context context, ArrayList<PageViewerFragment> PVList_) {
+    // Takes list of pages and uses titles for Views
+    public PageListAdapter (Context context, ArrayList<PageViewerFragment> pages) {
         this.context = context;
-        PVList = PVList_;
+        this.pages = pages;
     }
-
 
     @Override
     public int getCount() {
-        return PVList.size();
+        return pages.size();
     }
 
     @Override
-    public Object getItem(int i) {
-        return PVList.get(i);
+    public Object getItem(int position) {
+        return pages.get(position);
     }
 
     @Override
-    public long getItemId(int i) {
+    public long getItemId(int position) {
         return 0;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         TextView textView;
-        if (convertView == null) {
-            textView = new TextView(context);
-        } else {
+
+        if (convertView instanceof TextView) {
             textView = (TextView) convertView;
+        } else {
+            textView = new TextView(context);
+            textView.setPadding(5,8,8,5);
+            textView.setGravity(Gravity.CENTER);
+            textView.setTextSize(14);
         }
 
-        textView.setText(PVList.get(position).getTitle());
-        textView.setPadding(10,0,0,0);
-
+        textView.setText(pages.get(position).getTitle());
         return textView;
     }
-
 }
