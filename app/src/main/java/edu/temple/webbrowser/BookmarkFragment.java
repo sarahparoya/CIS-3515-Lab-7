@@ -4,9 +4,12 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -19,6 +22,7 @@ public class BookmarkFragment extends Fragment {
     ListView listBookmarks;
     BookmarkAdapter TheAdapter;
     ArrayList<String> bookmarkList;
+    Button close;
 
     public BookmarkFragment() {
         // Required empty public constructor
@@ -55,6 +59,14 @@ public class BookmarkFragment extends Fragment {
         listBookmarks = v.findViewById(R.id.listBookmarks);
         TheAdapter = new BookmarkAdapter(getContext(), bookmarkList);
         listBookmarks.setAdapter(TheAdapter);
+        close = v.findViewById(R.id.buttonClose);
+        close.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeFragment();
+
+            }
+        });
 
 //        listPages.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 //            @Override
@@ -67,5 +79,11 @@ public class BookmarkFragment extends Fragment {
         return v;
     }
 
+    private void closeFragment() {
+        getFragmentManager().beginTransaction().remove(BookmarkFragment.this).commit();
+
+
+
+    }
 
 }

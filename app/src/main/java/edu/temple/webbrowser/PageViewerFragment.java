@@ -1,5 +1,6 @@
 package edu.temple.webbrowser;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -15,6 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 
 public class PageViewerFragment extends Fragment implements Parcelable {
@@ -65,7 +69,7 @@ public class PageViewerFragment extends Fragment implements Parcelable {
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState == null) {
             //browser.loadUrl(getArguments().getString("URL_"));
-            browser.loadUrl("");
+            browser.loadUrl("https://google.com");
         } else {
             browser.restoreState(savedInstanceState);
         }

@@ -20,7 +20,7 @@
     <FrameLayout
         android:id="@+id/page_control"
         android:layout_width="0dp"
-        android:layout_height="75dp"
+        android:layout_height="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/browser_control">

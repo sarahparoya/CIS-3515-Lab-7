@@ -8,8 +8,6 @@
     android:paddingLeft="0dp"
     tools:context=".BrowserControlFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <ImageButton
         android:id="@+id/btnAdd"
         android:layout_width="179dp"

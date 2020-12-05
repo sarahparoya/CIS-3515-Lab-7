@@ -5,8 +5,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 
+import androidx.viewpager.widget.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,7 @@ public class PagerFragment extends Fragment {
 
     }
 
-    public static PagerFragment newInstance(ArrayList<PageViewerFragment> PVList) {
+    public static PagerFragment newInstance() {
         PagerFragment fragment = new PagerFragment();
         return fragment;
     }

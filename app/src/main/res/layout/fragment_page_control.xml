@@ -2,52 +2,46 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frmControls"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PageControlFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:id="@+id/rowTop"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-    <EditText
-        android:id="@+id/editURL"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="25dp"
-        android:layout_marginTop="25dp"
-        android:ems="10"
-        android:inputType="textUri"
-        android:text="URL:"
-        android:textColor="#000000"
-        android:textSize="18sp" />
+        <EditText
+            android:id="@+id/editTextURL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Search Here" />
 
-    <ImageButton
-        android:id="@+id/btnRight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_media_ff"
-        android:layout_marginLeft="338dp"
-        android:layout_marginTop="25dp"
-        />
+        <ImageButton
+            android:id="@+id/btnGo"
+            android:layout_width="51dp"
+            android:layout_height="50dp"
+            android:src="@android:drawable/presence_online" />
 
-    <ImageButton
-        android:id="@+id/btnLeft"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_media_rew"
-        android:layout_marginTop="25dp"
-        android:layout_marginLeft="285dp"
-        />
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_media_rew" />
 
-    <ImageButton
-        android:id="@+id/btnGo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="250dp"
-        android:layout_marginTop="35dp"
-        android:src="@android:drawable/presence_online" />
+        <ImageButton
+            android:id="@+id/btnNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_media_ff" />
 
+
+    </LinearLayout>
 
 </FrameLayout>

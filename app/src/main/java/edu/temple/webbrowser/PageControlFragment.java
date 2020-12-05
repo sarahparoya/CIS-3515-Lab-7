@@ -8,11 +8,16 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link PageControlFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
 public class PageControlFragment extends Fragment {
 
     EditText editTextURL;
@@ -47,10 +52,10 @@ public class PageControlFragment extends Fragment {
             loadText = savedInstanceState.getString("urlText");
         }
 
-        editTextURL = v.findViewById(R.id.editURL);
+        editTextURL = v.findViewById(R.id.editTextURL);
         btnGo = v.findViewById(R.id.btnGo);
-        btnBack = v.findViewById(R.id.btnLeft);
-        btnNext = v.findViewById(R.id.btnRight);
+        btnBack = v.findViewById(R.id.btnBack);
+        btnNext = v.findViewById(R.id.btnNext);
         Toast.makeText(this.getContext(), loadText, Toast.LENGTH_LONG).show();
         if(loadText!=null) editTextURL.setText(loadText);
 
